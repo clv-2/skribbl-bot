@@ -4,7 +4,7 @@ let invite;
 let invLoop;
 let didLogWords;
 
-function send(msg){
+function post(msg){
 	bc.postMessage(msg);
 }
 
@@ -14,8 +14,8 @@ invLoop = setTimeout(()=>{
 	let inv = document.getElementById("invite");
 	let plrs = document.getElementById("containerLobbyPlayers");
 	if(inv){
-		invite = inv.value();
-		send({req: "join", data: invite});
+		invite = inv.value().match(/\/\?(.*)/g)[0];
+		post({req: "join", data: invite});
 	}
 	if(inv && plrs.children.length > 1){
 		start();
@@ -45,18 +45,27 @@ function filter(words){
 	}
 	return newW;
 }
+function sendWord(wrd){
+    const element = document.getElementById("inputChat")
+    element.value = wrd.toLowerCase();    
+    element.focus();
+    $(element).submit();
+}
+
 
 function start(){
-	document.getElementById("buttonLobbyPlay").click();
 	setInterval(()=>{
 		if(isPicking() && !didLogWords){
+			didLogWords = true;
 			let ws = getWordsForTurn();
 			document.getElementsByClassName("wordContainer")[0].children[0].click();
 			newWords.push(...filter(ws));
-			post({req:"answer", data: ws[0]);
-			didLogWords = true;
+			post({req:"answer", data: ws[0]});
 		}else{
 			didLogWords = false;
+		}
+		if(isInLobby()){
+			document.getElementById("buttonLobbyPlay").click();
 		}
 	}, 100);
 }
@@ -67,5 +76,7 @@ bc.onmessage = function(evt){
 		post({req: "invite", data: invite});
 	}else if(msg.req == "logWords"){
 		newWords.push(...filter(msg.data);
+	}else if(msg.req == "answer"){
+		sendWrd(msg.data);
 	}
 }
