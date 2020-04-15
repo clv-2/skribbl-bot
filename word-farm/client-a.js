@@ -61,14 +61,14 @@ function start(){
 			let ws = getWordsForTurn();
 			document.getElementsByClassName("wordContainer")[0].children[0].click();
 			newWords.push(...filter(ws));
-			setTimeout(()=>{post({req:"answer", data: ws[0]})}, 1000);
+			setTimeout(()=>{post({req:"answer", data: ws[0]})}, 2000);
 		}else{
 			didLogWords = false;
 		}
 		if(isInLobby()){
 			document.getElementById("buttonLobbyPlay").click();
 		}
-	}, 100);
+	}, 500);
 }
 
 bc.onmessage = function(evt){

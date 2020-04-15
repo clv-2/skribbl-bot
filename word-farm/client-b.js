@@ -30,12 +30,12 @@ function start(){
 			let ws = getWordsForTurn();
 			document.getElementsByClassName("wordContainer")[0].children[0].click();
 			post({req: "logWords", data: ws});
-			setTimeout(()=>{post({req:"answer", data: ws[0]})}, 1000);
+			setTimeout(()=>{post({req:"answer", data: ws[0]})}, 2000);
 			didLogWords = true;
 		}else{
 			didLogWords = false;
 		}
-	}, 100);
+	}, 500);
 }
 function enter(inv){
 	if(invite) return;
