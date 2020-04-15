@@ -30,25 +30,33 @@ function start(){
 			let ws = getWordsForTurn();
 			document.getElementsByClassName("wordContainer")[0].children[0].click();
 			post({req: "logWords", data: ws});
-			post({req: "answer", data: ws[0]});
+			setTimeout(()=>{post({req:"answer", data: ws[0]})}, 1000);
 			didLogWords = true;
 		}else{
 			didLogWords = false;
 		}
 	}, 100);
 }
-
+function enter(inv){
+	if(invite) return;
+	window.history.pushState("skribbl", "skribbl", inv);
+	invite = inv;
+	document.getElementById("inputName").value = Math.random();
+	document.getElementById("buttonAvatarCustomizerRandomize").click();
+	document.getElementById("formLogin").children[2].click();
+	console.log("joining");
+	setTimeout(start, 1000);
+}
 
 bc.onmessage = function(evt){
 	let msg = evt.data;
 	if(msg.req == "join"){
-		window.history.pushState("", "", msg.data);
-		document.getElementById("inputName").value = Math.random();
-		documnet.getElementById("buttonAvatarCustomizerRandomize").click();
-		document.getElementById("formLogin").children[2].click();
-		setTimeout(start, 1000);
+		enter(msg.data);
 	}else if(msg.req == "answer"){
-		sendWrd(msg.data);
+		sendWord(msg.data);
+	}else if(msg.req == "invite"){
+		enter(msg.data);
 	}
 }
 
+post({req: "getInv"});

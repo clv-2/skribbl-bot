@@ -10,11 +10,12 @@ function post(msg){
 
 document.getElementById("buttonLoginCreatePrivate").click();
 
-invLoop = setTimeout(()=>{
+invLoop = setInterval(()=>{
 	let inv = document.getElementById("invite");
 	let plrs = document.getElementById("containerLobbyPlayers");
-	if(inv){
-		invite = inv.value().match(/\/\?(.*)/g)[0];
+	if(inv && inv.value && inv.value.length > 0){
+		invite = inv.value.match(/\/\?(.*)/g)[0];
+		document.getElementById("lobbySetRounds").value = "10";
 		post({req: "join", data: invite});
 	}
 	if(inv && plrs.children.length > 1){
@@ -60,7 +61,7 @@ function start(){
 			let ws = getWordsForTurn();
 			document.getElementsByClassName("wordContainer")[0].children[0].click();
 			newWords.push(...filter(ws));
-			post({req:"answer", data: ws[0]});
+			setTimeout(()=>{post({req:"answer", data: ws[0]})}, 1000);
 		}else{
 			didLogWords = false;
 		}
@@ -75,8 +76,8 @@ bc.onmessage = function(evt){
 	if(msg.req == "getInv"){
 		post({req: "invite", data: invite});
 	}else if(msg.req == "logWords"){
-		newWords.push(...filter(msg.data);
+		newWords.push(...filter(msg.data));
 	}else if(msg.req == "answer"){
-		sendWrd(msg.data);
+		sendWord(msg.data);
 	}
 }
